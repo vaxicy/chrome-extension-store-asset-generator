@@ -13,12 +13,10 @@ ENV/
 .pytest_cache/
 
 # Generated store assets (outputs from the scripts)
-store-assets/
-screenshots/
-output/
-*.png
-*.jpg
-*.jpeg
+# Only ignore the generated directories, NOT example images in the repo
+/store-assets/
+/screenshots/
+/output/
 
 # Fonts that are copied into target projects
 fonts/
