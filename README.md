@@ -41,12 +41,12 @@ A reusable **user-level** CodeBuddy skill that generates Chrome Web Store screen
 ## 功能 | Features
 
 - 生成 1280×800 商店截图与 440×280 / 1400×560 宣传图。
-- 使用像素风字体 `PressStart2P-Regular.ttf` 营造复古 SaaS 视觉。
+- **可选**像素风字体 `PressStart2P-Regular.ttf`，适合复古 SaaS 视觉，也支持常规字体。
 - 内置 `popup_mock` 组件，支持等比缩放，自动切换小尺寸字号。
 - 强制 **生成 → 预览 → 修复 → 重生成** 工作流，确保每张素材都通过 7 项视觉 QA。
 
 - Generates 1280×800 store screenshots and 440×280 / 1400×560 promotional tiles.
-- Uses pixel-art font `PressStart2P-Regular.ttf` for a retro SaaS look.
+- **Optional** pixel-art font `PressStart2P-Regular.ttf` for a retro SaaS look; falls back to system fonts when omitted.
 - Built-in `popup_mock` component with scale-aware font sizing.
 - Enforces a **generate → preview → fix → regenerate** loop so every asset passes 7 visual QA rules.
 
@@ -64,7 +64,7 @@ chrome-extension-store-asset-generator/
 │   └── qa-checklist.md                   # 7 项视觉 QA 硬规则
 ├── examples/                             # 真实项目生成效果预览
 ├── assets/
-│   └── PressStart2P-Regular.ttf          # 像素字体
+│   └── PressStart2P-Regular.ttf          # 示例像素字体（可选）
 ├── requirements.txt                       # 依赖
 ├── LICENSE                                # MIT
 └── README.md

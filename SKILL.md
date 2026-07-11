@@ -25,17 +25,16 @@ Trigger this skill when the user:
 - Mentions `generate-store-screenshots.py` or `generate-store-promo.py`.
 - Reports a visual defect in a generated asset (overflow, misalignment, overlap,
   text cut off, odd orphan row in a grid).
-- Wants a new store asset for a project that should follow the same pixel/SaaS
-  visual style and QA bar.
+- Wants a new store asset for a project that should follow the same SaaS
+  visual style and QA bar (the bundled examples use an optional pixel font).
 
 ## Prerequisites
 
 - Python 3 with `Pillow` installed (`pip install Pillow`).
-- The pixel font `assets/PressStart2P-Regular.ttf` must be available at
-  `<project>/fonts/PressStart2P-Regular.ttf` (the scripts look there first).
-  Copy it from this skill's `assets/` folder into the target project before
-  running. Chinese/Windows system fonts (msyh.ttc, simhei.ttf) are also used and
-  resolve automatically on Windows.
+- The pixel font `assets/PressStart2P-Regular.ttf` is **optional**. If a project
+  wants the retro/pixel look, copy it to `<project>/fonts/PressStart2P-Regular.ttf`
+  (the scripts look there first). For non-pixel projects, the scripts fall back to
+  standard system fonts (e.g., msyh.ttc / simhei.ttf on Windows).
 
 ## Workflow (mandatory loop)
 
@@ -79,4 +78,5 @@ generate→preview→fix→regenerate delivery loop.
 - `scripts/generate-store-screenshots.py` — screenshot generator template.
 - `scripts/generate-store-promo.py` — promo tile generator template.
 - `references/qa-checklist.md` — the mandatory visual QA checklist.
-- `assets/PressStart2P-Regular.ttf` — pixel font required by the scripts.
+- `assets/PressStart2P-Regular.ttf` — optional pixel font used by the bundled
+  example templates.
