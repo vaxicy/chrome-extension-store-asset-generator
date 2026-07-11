@@ -31,3 +31,6 @@ fonts/
 # OS metadata
 .DS_Store
 Thumbs.db
+
+# CodeBuddy local working memory / metadata (not for the repo)
+.codebuddy/
