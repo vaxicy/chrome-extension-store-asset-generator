@@ -1,9 +1,14 @@
-# Store Asset Generator | 商店素材生成器
+# Chrome 扩展商店素材生成器 | Chrome Extension Store Asset Generator
+
+> 一键生成 Chrome Web Store 截图与宣传图（PNG/JPG）+ 视觉 QA
+> One-click Chrome Web Store screenshots & promo images (PNG/JPG) with strict visual QA
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
   <img src="https://img.shields.io/badge/Python-3.10+-blue.svg" alt="Python: 3.10+">
 </p>
+
+**关键词 / Keywords:** Chrome 扩展 · 商店截图 · 宣传图 · Chrome Web Store · screenshot generator · promo image · CodeBuddy skill · Pillow
 
 > **中文** | [English](#english-version)
 
@@ -30,7 +35,7 @@ A reusable **user-level** CodeBuddy skill that generates Chrome Web Store screen
 ## 项目结构 | Folder Structure
 
 ```
-store-asset-generator/
+chrome-extension-store-asset-generator/
 ├── SKILL.md                              # skill 触发 + 工作流（CodeBuddy 必需）
 ├── scripts/
 │   ├── generate-store-screenshots.py    # 1280×800 截图生成器
@@ -64,7 +69,7 @@ pip install -r requirements.txt
 将该 Skill 复制到 CodeBuddy 用户级 Skill 目录：
 
 ```powershell
-Copy-Item . "$env:USERPROFILE\.codebuddy\skills\store-asset-generator" -Recurse -Force
+Copy-Item . "$env:USERPROFILE\.codebuddy\skills\chrome-extension-store-asset-generator" -Recurse -Force
 ```
 
 在目标项目中运行脚本：
@@ -108,7 +113,7 @@ python scripts/generate-store-promo.py
 
 ```powershell
 # 复制到用户级 skill 目录
-Copy-Item . "$env:USERPROFILE\.codebuddy\skills\store-asset-generator" -Recurse -Force
+Copy-Item . "$env:USERPROFILE\.codebuddy\skills\chrome-extension-store-asset-generator" -Recurse -Force
 ```
 
 之后，只要你说"生成商店截图 / 宣传图"或提到 `generate-store-screenshots.py`，该 Skill 就会自动触发。
@@ -144,7 +149,7 @@ This is a reusable CodeBuddy skill for generating Chrome Web Store screenshots a
 Copy the skill into your CodeBuddy user skills directory:
 
 ```powershell
-Copy-Item . "$env:USERPROFILE\.codebuddy\skills\store-asset-generator" -Recurse -Force
+Copy-Item . "$env:USERPROFILE\.codebuddy\skills\chrome-extension-store-asset-generator" -Recurse -Force
 ```
 
 Run the scripts from your project root:

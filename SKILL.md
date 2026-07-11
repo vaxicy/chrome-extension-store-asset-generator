@@ -1,6 +1,6 @@
 ---
-name: store-asset-generator
-description: "Generate Chrome Web Store screenshots and promotional images (PNG/JPG) for browser-extension or web-app projects using a PIL-based Python pipeline, then enforce a strict visual QA checklist before delivery. Use this skill whenever the user asks to create, update, or fix store listing art, promo tiles, screenshots, or any marketing image produced by a generate-store-*.py script."
+name: chrome-extension-store-asset-generator
+description: "Generate Chrome Web Store screenshots and promotional images (PNG/JPG) for browser-extension or web-app projects using a PIL-based Python pipeline, then enforce a strict visual QA checklist before delivery. Use this skill whenever the user asks to create, update, or fix store listing art, promo tiles, screenshots, or any marketing image produced by a generate-store-*.py script. 中文：Chrome 扩展商店素材生成器，一键生成商店截图与宣传图并做视觉 QA。"
 ---
 
 # Store Asset Generator
