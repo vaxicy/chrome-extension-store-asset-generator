@@ -27,17 +27,13 @@ A reusable **user-level** CodeBuddy skill that generates Chrome Web Store screen
 ### Pixel Color Picker
 
 <p align="center">
-  <img src="examples/color-picker-promo-large.png" alt="Pixel Color Picker 1400×560 宣传图" width="700">
-</p>
-<p align="center">
-  <img src="examples/color-picker-screenshot-01.png" alt="Pixel Color Picker 商店截图" width="400">
+  <img src="examples/color-picker-screenshot-01.png" alt="Pixel Color Picker 商店截图" width="640">
 </p>
 
 ### MiniCalc
 
 <p align="center">
-  <img src="examples/minicalc-promo-small.png" alt="MiniCalc 440×280 宣传图" width="220">
-  <img src="examples/minicalc-shot1-main.png" alt="MiniCalc 商店截图" width="400">
+  <img src="examples/minicalc-shot1-main.png" alt="MiniCalc 商店截图" width="640">
 </p>
 
 ---
