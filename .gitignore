@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.env
+.venv
+env/
+venv/
+ENV/
+*.egg-info/
+.pytest_cache/
+
+# Generated store assets (outputs from the scripts)
+store-assets/
+screenshots/
+output/
+*.png
+*.jpg
+*.jpeg
+
+# Fonts that are copied into target projects
+fonts/
+
+# IDE / editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS metadata
+.DS_Store
+Thumbs.db
