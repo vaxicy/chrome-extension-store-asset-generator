@@ -42,10 +42,12 @@ Follow this exact cycle for every asset change. Do not skip steps.
 
 1. **Generate** — run the relevant script from the project root:
    - Screenshots: `python scripts/generate-store-screenshots.py`
-     (outputs to `<project>/store-assets/screenshots/`, 1280×800 each).
+     (outputs **per-language** sets — `zh` fully Chinese, `en` fully English —
+     to `<project>/store-assets/screenshots/{zh,en}/`, 1280×800 each).
    - Promo tiles: `python scripts/generate-store-promo.py`
-     (outputs `promo-small-440x280.png` and `promo-large-1400x560.png` to
-     `<project>/store-assets/`).
+     (outputs **bilingual** `promo-small-440x280.png` and
+     `promo-large-1400x560.png` — both Chinese + English in one image — to
+     `<project>/store-assets/promo/`).
 2. **Self-preview** — open the generated PNG(s) and inspect against
    `references/qa-checklist.md`. Check overflow, alignment, spacing, even grids,
    bottom-margin safety line, and section non-overlap.
@@ -65,13 +67,41 @@ Follow this exact cycle for every asset change. Do not skip steps.
 - Keep `popup_mock(draw, x, y, scale)` and its `scale < 0.6` branch — it is the
   reference implementation of scale-aware font sizing (QA rule #1).
 
+## Language & Localization Rules (mandatory)
+
+These rules are non-negotiable for Chrome Web Store assets and are enforced by
+the QA checklist (`references/qa-checklist.md`):
+
+- **Screenshots are split by language.** Generate one set per language and save
+  under `<project>/store-assets/screenshots/{zh,en}/`. A `zh` screenshot is
+  **all Chinese**; an `en` screenshot is **all English**. Never mix both
+  languages in a single screenshot.
+- **Promo tiles are bilingual.** The 440×280 and 1400×560 tiles MUST contain
+  both Chinese and English copy in the *same* image so the store backend
+  recognizes multi-language and reuses one file. Save under
+  `<project>/store-assets/promo/` (no `zh`/`en` subdirs).
+- **Mockup "dynamic" copy follows the screenshot language.** Any text that looks
+  like the product's live output (AI replies / option buttons, simulated emails,
+  search suggestions) must match the screenshot language. Drive it from a `lang`
+  dictionary — never hardcode English placeholders under a translated banner.
+- **Hand-drawn cards: recompute coordinates after edits.** When you change a
+  card's preview rows or copy length, recompute every downstream coordinate
+  (button Y, card height, internal spacing) so elements don't overlap.
+- **Promo CTA separator is a middot `·`.** Separate Chinese/English inside a CTA
+  button with `·` (e.g. `立即体验 · Try It Now`), not double spaces.
+- **All generated assets stay inside the project** (under `store-assets/`). Only
+  the final packed `.zip` may be copied out to the user's default folder.
+
 ## Visual QA Standard
 
 All generated assets MUST satisfy the checklist in
 `references/qa-checklist.md`. The checklist is the source of truth for:
 font scaling, banner title/subtitle gaps, even card grids, bottom-margin safety
-line, inter-section non-overlap, section-title-to-content spacing, and the
-generate→preview→fix→regenerate delivery loop.
+line, inter-section non-overlap, section-title-to-content spacing, button-text
+vertical centering + auto-shrink, long-copy wrapping (no truncation), the
+generate→preview→fix→regenerate delivery loop, and the localization rules
+above (per-language screenshots, bilingual promo, dynamic-copy switching,
+hand-drawn-card coordinate recomputation, middot CTA).
 
 ## Resources
 

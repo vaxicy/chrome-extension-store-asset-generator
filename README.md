@@ -43,12 +43,12 @@ A reusable **user-level** CodeBuddy skill that generates Chrome Web Store screen
 - 生成 1280×800 商店截图与 440×280 / 1400×560 宣传图。
 - **可选**像素风字体 `PressStart2P-Regular.ttf`，适合复古 SaaS 视觉，也支持常规字体。
 - 内置 `popup_mock` 组件，支持等比缩放，自动切换小尺寸字号。
-- 强制 **生成 → 预览 → 修复 → 重生成** 工作流，确保每张素材都通过 7 项视觉 QA。
+- 强制 **生成 → 预览 → 修复 → 重生成** 工作流，确保每张素材都通过 9 项视觉 QA + 本地化规则。
 
 - Generates 1280×800 store screenshots and 440×280 / 1400×560 promotional tiles.
 - **Optional** pixel-art font `PressStart2P-Regular.ttf` for a retro SaaS look; falls back to system fonts when omitted.
 - Built-in `popup_mock` component with scale-aware font sizing.
-- Enforces a **generate → preview → fix → regenerate** loop so every asset passes 7 visual QA rules.
+- Enforces a **generate → preview → fix → regenerate** loop so every asset passes 9 visual QA rules + localization rules.
 
 ---
 
@@ -61,7 +61,7 @@ chrome-extension-store-asset-generator/
 │   ├── generate-store-screenshots.py    # 1280×800 截图生成器
 │   └── generate-store-promo.py          # 440×280 + 1400×560 宣传图生成器
 ├── references/
-│   └── qa-checklist.md                   # 7 项视觉 QA 硬规则
+│   └── qa-checklist.md                   # 9 项视觉 QA + 本地化硬规则
 ├── examples/                             # 真实项目生成效果预览
 ├── assets/
 │   └── PressStart2P-Regular.ttf          # 示例像素字体（可选）
@@ -96,10 +96,10 @@ Copy-Item . "$env:USERPROFILE\.codebuddy\skills\chrome-extension-store-asset-gen
 在目标项目中运行脚本：
 
 ```bash
-# 截图（输出到 <project>/store-assets/screenshots/）
+# 截图（按语言分两套：输出到 <project>/store-assets/screenshots/{zh,en}/）
 python scripts/generate-store-screenshots.py
 
-# 宣传图（输出 <project>/store-assets/promo-small-440x280.png 和 promo-large-1400x560.png）
+# 宣传图（中英双语，输出到 <project>/store-assets/promo/promo-small-440x280.png 和 promo-large-1400x560.png）
 python scripts/generate-store-promo.py
 ```
 
@@ -118,6 +118,10 @@ python scripts/generate-store-promo.py
 5. 相邻区块不得重叠。
 6. 小节标题与内容间距 ≥ 20px。
 7. 每轮改动后必须重新生成并自行预览。
+8. 按钮内文字必须垂直居中 + 自适应缩小（promo CTA 双语文案，按按钮高度居中，过大则缩小字号）。
+9. 长文案必须换行/精简，避免被截断遮挡（尤其英文更长，超出宽度要换行或精简）。
+
+**本地化规则（硬性）**：截图按语言分两套（`store-assets/screenshots/{zh,en}/`，中文图全中文、英文图全英文）；宣传图必须中英双语同一张图（存 `store-assets/promo/`）；mockup 动态文案随截图语言切换（用 `lang` 字典）；手绘卡片改行数/文案后必须重算依赖坐标；promo CTA 中英用中点 `·` 分隔。
 
 ---
 
@@ -176,8 +180,8 @@ Copy-Item . "$env:USERPROFILE\.codebuddy\skills\chrome-extension-store-asset-gen
 Run the scripts from your project root:
 
 ```bash
-python scripts/generate-store-screenshots.py  # outputs to store-assets/screenshots/
-python scripts/generate-store-promo.py        # outputs promo-small and promo-large
+python scripts/generate-store-screenshots.py  # outputs per-language sets to store-assets/screenshots/{zh,en}/
+python scripts/generate-store-promo.py        # outputs bilingual tiles to store-assets/promo/
 ```
 
 After generation, inspect every PNG against `references/qa-checklist.md`, fix the script parameters, and regenerate until all checks pass.

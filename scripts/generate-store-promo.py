@@ -2,7 +2,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "store-assets"
+OUT = ROOT / "store-assets" / "promo"
 OUT.mkdir(parents=True, exist_ok=True)
 
 COLORS = {
@@ -96,6 +96,11 @@ def popup_mock(draw, x, y, scale=1.0):
     text(draw, (x + w // 2, y + qpk_top + int(14 * scale)), "快速取色",
          f=font(qpk_font, bold=True), anchor="ma")
 
+    rect(draw, (x + 28 * scale, y + qpk_top + qpk_h + int(8 * scale), x + w - 28 * scale, y + qpk_top + qpk_h + int(8 * scale) + int(20 * scale)),
+         COLORS["mint"], width=int(3 * scale))
+    text(draw, (x + w // 2, y + qpk_top + qpk_h + int(18 * scale)), "Quick Pick",
+         f=font(int(11 * scale)), anchor="ma")
+
     # palettes section
     pal_y = y + int(144 if scale < 0.6 else 160) * scale
     pal_font = int(13 if scale < 0.6 else 17) * scale
@@ -139,50 +144,84 @@ def popup_mock(draw, x, y, scale=1.0):
          "历史 · 设置 · Pro", f=font(bt_font), anchor="ma")
 
 
-# ── Small Promo Tile (440 × 280) ──────────────────────────────
+# ── Small Promo Tile (440 × 280) — bilingual ──────────────────────────────
 def small_promo():
     W, H = 440, 280
     img, draw = base_bg(W, H)
 
-    # pink banner
+    # pink banner (title brand + bilingual subtitle)
     rect(draw, (16, 14, 424, 58), COLORS["pink"], width=3)
-    text(draw, (28, 23), "Pixel Color Picker", fill="white", f=font(19, bold=True))
+    text(draw, (28, 20), "Pixel Color Picker", fill="white", f=font(19, bold=True))
+    text(draw, (28, 44), "网页取色 · Web color picker", fill="white", f=font(11))
 
-    # popup (scaled ~50% — slightly smaller than before to prevent overflow)
-    popup_mock(draw, 18, 68, scale=0.50)
+    # compact popup mock that fully fits the 440×280 canvas with safe margins
+    px, py, pw, ph = 18, 68, 150, 190
+    rect(draw, (px + 6, py + 6, px + pw + 6, py + ph + 6), "#d8d1d8",
+         outline="#d8d1d8", width=0)
+    rect(draw, (px, py, px + pw, py + ph), COLORS["white"], width=4)
 
-    # right-side features — compact
-    rx = 210
+    # header
+    rect(draw, (px + 10, py + 10, px + pw - 10, py + 42), COLORS["pink"], width=3)
+    text(draw, (px + 18, py + 17), "PIXEL TOOL", fill="white",
+         f=font(10, pixel=True))
+    text(draw, (px + 18, py + 28), "像素吸色器", fill="white",
+         f=font(12, bold=True))
+
+    # bilingual quick-pick bar (single bar, both languages)
+    rect(draw, (px + 14, py + 50, px + pw - 14, py + 78), COLORS["mint"], width=3)
+    text(draw, (px + pw // 2, py + 58), "快速取色 · Pick", f=font(12, bold=True),
+         anchor="ma")
+
+    # two palette cards
+    swatches = ["#ff6b9d", "#8c6cff", "#69d9bf", "#fff0a8"]
+    pal_names = [("默认色卡", "4/20 色"), ("品牌灵感", "5/20 色")]
+    for i, ((name, count), color) in enumerate(zip(pal_names, swatches)):
+        cy = py + 88 + i * 50
+        rect(draw, (px + 14, cy, px + pw - 14, cy + 40), COLORS["panel"], width=3)
+        for j, c in enumerate(swatches):
+            sx = px + 22 + j * 20
+            draw.rectangle((sx, cy + 9, sx + 16, cy + 25), fill=c,
+                           outline=COLORS["ink"], width=2)
+        text(draw, (px + 102, cy + 8), name, f=font(11, bold=True))
+        text(draw, (px + 102, cy + 24), count, fill=COLORS["soft"], f=font(9))
+
+    # bottom bar
+    rect(draw, (px + 14, py + ph - 32, px + pw - 14, py + ph - 10),
+         COLORS["cream"], width=3)
+    text(draw, (px + pw // 2, py + ph - 21), "历史 · History", f=font(10),
+         anchor="ma")
+
+    # right-side features — compact bilingual
+    rx = 182
     features = [
-        ("网页吸色", "一键吸取页面颜色"),
-        ("色卡管理", "多色卡与搜索"),
-        ("格式导出", "CSS / JSON / PNG"),
-        ("中英双语", "Pixel 风主题"),
+        ("网页吸色", "取色 · Pick"),
+        ("色卡管理", "色卡 · Palettes"),
+        ("格式导出", "导出 · Export"),
+        ("中英双语", "双语 · Bilingual"),
     ]
     for i, (title, desc) in enumerate(features):
-        fy = 76 + i * 47
-        rect(draw, (rx, fy, 420, fy + 39), COLORS["panel"], width=3)
-        draw.ellipse((rx + 9, fy + 9, rx + 27, fy + 27), fill=COLORS["pink"],
+        fy = 74 + i * 45
+        rect(draw, (rx, fy, 420, fy + 38), COLORS["panel"], width=3)
+        draw.ellipse((rx + 9, fy + 9, rx + 25, fy + 25), fill=COLORS["pink"],
                      outline=COLORS["ink"], width=2)
-        text(draw, (rx + 37, fy + 5), title, f=font(13, bold=True))
-        text(draw, (rx + 37, fy + 21), desc, fill=COLORS["soft"], f=font(10))
+        text(draw, (rx + 34, fy + 5), title, f=font(13, bold=True))
+        text(draw, (rx + 34, fy + 21), desc, fill=COLORS["soft"], f=font(10))
 
     img.save(OUT / "promo-small-440x280.png")
 
 
-# ── Large Promo Tile (1400 × 560) ────────────────────────────
-# Clean 3-column grid: popup | hero-text+actions | exports+pro
+# ── Large Promo Tile (1400 × 560) — bilingual, middot CTA ─────────────────
+# Clean 3-column grid: popup | hero-text+actions | exports+Pro
 def large_promo():
     W, H = 1400, 560
     img, draw = base_bg(W, H)
 
     # ── Top: full-width pink hero banner ─────────────────────
-    # banner height = 92px — enough room for title + subtitle with breathing space
     rect(draw, (36, 24, 1364, 116), COLORS["pink"], width=5)
     text(draw, (68, 40), "Pixel Color Picker", fill="white", f=font(38, bold=True))
-    # subtitle: clear gap from title, well within banner bounds
+    # bilingual subtitle: clear gap from title, well within banner bounds
     text(draw, (70, 86),
-         "像素风网页取色 · 色卡管理 · 多格式导出 · 中英双语 · 14 天免费试用",
+         "像素网页取色 · 色卡管理 · 多格式导出 · 双语界面 · 14-Day Trial",
          fill="white", f=font(16))
 
     # ── Content area: 3 logical columns ─────────────────────
@@ -193,11 +232,11 @@ def large_promo():
     cx = 330
     cy = 130
 
-    text(draw, (cx, cy), "一键吸取网页颜色", f=font(26, bold=True))
+    text(draw, (cx, cy), "一键吸取网页颜色 · Pick web colors", f=font(26, bold=True))
 
     desc_lines = [
-        "从网页中快速获取颜色，自动保存到色卡和历史记录。",
-        "适合设计师、前端开发和内容创作者整理灵感配色。",
+        "从网页快速取色，自动存入色卡与历史。",
+        "Quick eyedrop, auto-saved to palettes & history.",
     ]
     dy = cy + 38
     for line in desc_lines:
@@ -210,16 +249,19 @@ def large_promo():
     text(draw, (cx + 95, panel_y + 16), "#FF6B9D", f=font(26, bold=True))
 
     btn_y = panel_y + 84
-    rect(draw, (cx, btn_y, cx + 186, btn_y + 48), COLORS["mint"], width=4)
-    text(draw, (cx + 93, btn_y + 13), "复制颜色", f=font(18, bold=True), anchor="ma")
-    rect(draw, (cx + 202, btn_y, cx + 408, btn_y + 48), COLORS["cream"], width=4)
-    text(draw, (cx + 305, btn_y + 13), "保存到色卡", f=font(18, bold=True), anchor="ma")
+    btn_h = 48
+    rect(draw, (cx, btn_y, cx + 220, btn_y + btn_h), COLORS["mint"], width=4)
+    text(draw, (cx + 110, btn_y + btn_h // 2), "复制颜色 · Copy",
+         f=font(17, bold=True), anchor="mm")
+    rect(draw, (cx + 236, btn_y, cx + 456, btn_y + btn_h), COLORS["cream"], width=4)
+    text(draw, (cx + 346, btn_y + btn_h // 2), "保存到色卡 · Save",
+         f=font(17, bold=True), anchor="mm")
 
     # ── Col 3: Export format cards + Pro CTA (right side) ───
     rx = 850
 
-    # Section label — clear separation from cards below
-    text(draw, (rx, 120), "多格式导出", f=font(18, bold=True))
+    # Section label — clear separation from cards below, bilingual
+    text(draw, (rx, 120), "多格式导出 · Export", f=font(18, bold=True))
 
     # 6 export cards → 2 cols × 3 rows (even grid)
     exports = [
@@ -245,36 +287,38 @@ def large_promo():
     pro_x, pro_y = 850, 388
     rect(draw, (pro_x, pro_y, 1364, 528), COLORS["white"], width=5)
 
-    # Pro badge + title
+    # Pro badge + title (bilingual)
     rect(draw, (pro_x + 20, pro_y + 12, pro_x + 106, pro_y + 38), COLORS["pink"], width=3)
     text(draw, (pro_x + 63, pro_y + 15), "PRO", fill="white",
          f=font(14, bold=True), anchor="ma")
-    text(draw, (pro_x + 116, pro_y + 15), "专业版", f=font(20, bold=True))
+    text(draw, (pro_x + 116, pro_y + 15), "专业版 · Pro", f=font(20, bold=True))
 
-    # Features list
+    # Features list (bilingual)
     text(draw, (pro_x + 20, pro_y + 46),
-         "无限色卡 · Pro 主题 · 自定义主题 · 高级工具",
+         "无限色卡 · Pro 主题 · 自定义 · Pro tools",
          fill=COLORS["soft"], f=font(13))
 
-    # Trial note
+    # Trial note (bilingual)
     text(draw, (pro_x + 20, pro_y + 64),
-         "提供 14 天免费试用，付款后用邮箱解锁。",
+         "14 天免费试用，邮箱解锁 · 14-day free trial",
          fill=COLORS["soft"], f=font(12))
 
-    # CTA button — mint (bottom = 388+82+38 = 508, well within 560)
-    cta_w = 196
+    # CTA button — mint, bilingual, middot, vertically centered
+    # (bottom = 388+82+38 = 508, well within 560)
+    cta_w = 260
     cta_h = 38
     cta_x = pro_x + 20
     cta_y = pro_y + 82
     rect(draw, (cta_x, cta_y, cta_x + cta_w, cta_y + cta_h), COLORS["mint"], width=4)
-    text(draw, (cta_x + cta_w // 2, cta_y + 9), "14 天免费试用",
-         f=font(18, bold=True), anchor="ma")
+    text(draw, (cta_x + cta_w // 2, cta_y + cta_h // 2),
+         "14 天免费试用 · 14-Day Trial",
+         f=font(15, bold=True), anchor="mm")
 
     img.save(OUT / "promo-large-1400x560.png")
 
 
 if __name__ == "__main__":
     small_promo()
-    print(f"Generated {OUT / 'promo-small-440x280.png'} (440×280)")
+    print(f"Generated {OUT / 'promo-small-440x280.png'} (440×280, bilingual)")
     large_promo()
-    print(f"Generated {OUT / 'promo-large-1400x560.png'} (1400×560)")
+    print(f"Generated {OUT / 'promo-large-1400x560.png'} (1400×560, bilingual)")
