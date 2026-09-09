@@ -1,6 +1,9 @@
 # Generated store assets (output of generate-store-*.py) — not part of the skill source
 store-assets/
 
+# CodeBuddy internal data (working memory, etc.) — not for public release
+.codebuddy/
+
 # Python cache
 __pycache__/
 *.pyc
