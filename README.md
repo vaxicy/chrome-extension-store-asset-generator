@@ -13,9 +13,9 @@
 
 > **中文** | [English](#english-version)
 
-一个可复用的 **用户级** CodeBuddy Skill，基于 PIL 的 Python 流水线为浏览器扩展 / Web 应用项目生成 Chrome Web Store 截图和宣传图（PNG/JPG），并在交付前强制通过 **9 项视觉 QA + 本地化规则**。
+一个可复用的 **用户级** CodeBuddy Skill，基于 PIL 的 Python 流水线为浏览器扩展 / Web 应用项目生成 Chrome Web Store 截图和宣传图（PNG/JPG），并在交付前强制通过 **综合视觉 QA + 本地化规则**。
 
-A reusable **user-level** CodeBuddy skill that generates Chrome Web Store screenshots and promotional images (PNG/JPG) for browser-extension / web-app projects with a PIL-based Python pipeline, then enforces a strict **9-item visual QA + localization** checklist before delivery.
+A reusable **user-level** CodeBuddy skill that generates Chrome Web Store screenshots and promotional images (PNG/JPG) for browser-extension / web-app projects with a PIL-based Python pipeline, then enforces a strict **comprehensive visual QA + localization** checklist before delivery.
 
 ---
 
@@ -46,7 +46,7 @@ A reusable **user-level** CodeBuddy skill that generates Chrome Web Store screen
 - 内置 `popup_mock` 组件，支持等比缩放，小尺寸自动切换更小字号（scale-aware）。
 - 英文/长文案按 **词边界 + CJK 字符** 换行，避免单词被截断（如 `hi story`）。
 - 导出卡等网格强制 **偶数 2×N / 3×N**，杜绝「孤儿行」。
-- 强制 **生成 → 预览 → 修复 → 重生成** 工作流，确保每张素材都通过 9 项视觉 QA + 本地化规则。
+- 强制 **生成 → 预览 → 修复 → 重生成** 工作流，确保每张素材都通过 综合视觉 QA + 本地化规则。
 
 - Generates **1280×800 store screenshots** (per-language sets) and **440×280 / 1400×560 bilingual promo tiles**.
 - **Optional** pixel-art font `assets/PressStart2P-Regular.ttf` for a retro SaaS look; falls back to system fonts when omitted.
@@ -66,7 +66,7 @@ chrome-extension-store-asset-generator/
 │   ├── generate-store-screenshots.py    # 1280×800 截图生成器（zh / en 各一套）
 │   └── generate-store-promo.py          # 440×280 + 1400×560 双语宣传图生成器
 ├── references/
-│   └── qa-checklist.md                   # 9 项视觉 QA + 本地化硬规则
+│   └── qa-checklist.md                   # 综合视觉 QA + 本地化 + 硬性规则（emoji 禁令/纯色背景/灰底阴影/440×280 铁律/对比度/对齐基准/强制自检闭环）
 ├── examples/                             # 真实项目生成效果预览
 │   ├── color-picker-screenshot-01.png
 │   └── minicalc-shot1-main.png
@@ -128,7 +128,7 @@ python scripts/generate-store-promo.py
 
 ## 视觉 QA 标准 | Visual QA Standard
 
-所有生成素材必须满足 `references/qa-checklist.md` 中的检查项（9 项视觉 + 本地化）：
+所有生成素材必须满足 `references/qa-checklist.md` 中的检查项（综合视觉 QA + 本地化 + 硬性规则）：
 
 1. 字号必须随画布缩放（scale-aware）。
 2. Banner 标题与副标题必须留 ≥ 8px 间隙，副标题在框内。
@@ -139,6 +139,17 @@ python scripts/generate-store-promo.py
 7. 每轮改动后必须重新生成并自行预览（生成 → 预览 → 修复 → 重生成）。
 8. 按钮内文字必须垂直居中 + 自适应缩小（promo CTA 双语文案，按按钮高度居中，过大则缩小字号）。
 9. 长文案必须按词换行/精简，避免被截断遮挡（尤其英文更长）。
+
+**额外硬性规则（来自全局用户规则，详见 `references/qa-checklist.md`）：**
+
+- **禁 emoji / 非标准 Unicode 符号**：PIL 渲染 emoji 与 ✦▽➤◆ 等会成 □ 方框；改用几何图形，中文须用 `font_zh`。
+- **背景纯色**：禁网格线 / 圆点阵列等密集图案（密集恐惧症）。
+- **灰底 / 阴影防护**：禁 `surface2`，外层卡片 `shadow=False`，避免灰色光晕。
+- **对比度 ≥ WCAG AA 4.5:1**：按钮 / 关键文字须深底白字或白底深字。
+- **440×280 小型宣传图铁律**：popup scale ≤ 0.30、feature 用圆点 + 文字（禁卡片容器）、≤ 3 行 feature + 1 CTA。
+- **对齐基准线统一**：所有区块共用同一条左右边距，banner 右缘 = 末列右缘，列间距 ≥ 20px。
+- **重绘不 patch**：改脚本全量重生成；相对路径输出防 Windows 中文路径 `OSError 22`。
+- **强制逐张自检闭环**：`read_file` 打开每张 PNG，10 项自检全过才交付。
 
 **本地化规则（硬性）：**
 
@@ -180,7 +191,7 @@ Copy-Item . "$env:USERPROFILE\.codebuddy\skills\chrome-extension-store-asset-gen
 
 ### What it does
 
-A reusable CodeBuddy skill for generating Chrome Web Store screenshots and promotional images. It bundles two Python scripts that draw the assets with PIL, plus a strict **9-item visual QA + localization** checklist to catch overflow, misalignment, and spacing issues before delivery.
+A reusable CodeBuddy skill for generating Chrome Web Store screenshots and promotional images. It bundles two Python scripts that draw the assets with PIL, plus a strict **comprehensive visual QA + localization** checklist to catch overflow, misalignment, and spacing issues before delivery.
 
 ### Features
 

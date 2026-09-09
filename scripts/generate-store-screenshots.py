@@ -201,15 +201,10 @@ def paragraph(draw, xy, value, max_width, f=None, fill=COLORS["soft"], leading=1
 
 
 def base():
+    # Solid-color background per store-asset-bg-no-dense-pattern rule:
+    # no grid lines / dot arrays (triggers "密集恐惧症").
     img = Image.new("RGB", (W, H), COLORS["paper"])
     draw = ImageDraw.Draw(img)
-    for x in range(0, W, 24):
-        draw.line([(x, 0), (x, H)], fill="#f1e4ec", width=1)
-    for y in range(0, H, 24):
-        draw.line([(0, y), (W, y)], fill="#f1e4ec", width=1)
-    for x in range(12, W, 24):
-        for y in range(12, H, 24):
-            draw.rectangle((x, y, x + 2, y + 2), fill="#ffd9ea")
     return img, draw
 
 

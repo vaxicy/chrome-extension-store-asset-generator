@@ -1,36 +1,6 @@
-# Python
+# Generated store assets (output of generate-store-*.py) — not part of the skill source
+store-assets/
+
+# Python cache
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-.env
-.venv
-env/
-venv/
-ENV/
-*.egg-info/
-.pytest_cache/
-
-# Generated store assets (outputs from the scripts)
-# Only ignore the generated directories, NOT example images in the repo
-/store-assets/
-/screenshots/
-/output/
-
-# Fonts that are copied into target projects
-fonts/
-
-# IDE / editors
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS metadata
-.DS_Store
-Thumbs.db
-
-# CodeBuddy local working memory / metadata (not for the repo)
-.codebuddy/
+*.pyc

@@ -65,7 +65,48 @@ Follow this exact cycle for every asset change. Do not skip steps.
   `large_promo()` (1400×560). The large promo uses a 3-column grid
   (popup | hero+actions | exports+Pro).
 - Keep `popup_mock(draw, x, y, scale)` and its `scale < 0.6` branch — it is the
-  reference implementation of scale-aware font sizing (QA rule #1).
+  reference implementation of scale-aware font sizing (QA rule #5 in the checklist).
+
+## Visual Style & Hard Rules (mandatory, from global user rules)
+
+These hard rules are enforced by `references/qa-checklist.md`. They are
+non-negotiable for Chrome Web Store assets and must be followed on every
+generation:
+
+- **Visual style comes from the real project UI.** Read `css/style.css` `:root`
+  vars (`--bg`, `--surface`, `--border`, `--shadow`, `--radius`, `--primary`,
+  `--accent`), read `popup.html`, and use the running popup as the mockup
+  reference. Match colors / fonts / radius / shadow exactly. Stay within the
+  brand palette; never invent an unrelated visual language.
+- **No emoji / non-standard Unicode glyphs.** PIL renders most emoji and
+  decorative Unicode (✦ ✧ ▽ ➤ ◆) as **□ boxes** on Windows. Replace with
+  geometric shapes (`ellipse` / `rectangle` / `polygon`). Chinese text must use
+  `font_zh()` (msyh), never `font_en()`.
+- **Background must be solid color.** No grid lines, dot arrays, or tiled
+  patterns (triggers "密集恐惧症"). Use a soft solid color or a smooth gradient.
+- **No extra gray.** Never use `surface2` (`#f0f2f5`) on a light page background;
+  use `surface` (white). Any `card()`-style helper defaults to `shadow=True` —
+  pass `shadow=False` on every outer card that is not the popup shell itself, or a
+  gray halo appears (user rejects).
+- **Redraw from scratch, never patch.** When the user asks to swap assets / adjust
+  layout / fix a flaw, edit the composer script and regenerate from zero. Do not
+  write a patch that pastes onto the old PNG. Parameterize multi-layout variants;
+  derive pasted material height from aspect ratio (never hardcode). Use **relative
+  output paths** so Windows never hits the intermittent `OSError 22` on Chinese
+  absolute paths (both bundled scripts already resolve paths from
+  `ROOT = Path(__file__).resolve()` — keep this).
+- **Unified alignment baselines.** Derive all blocks from one `MARGIN` and
+  `RIGHT = W − MARGIN`. Banner right edge must equal the last column's right edge.
+  Column gap ≥ 20px (never 0). Add `assert` so an out-of-bounds block fails at
+  generation, not at review.
+- **Contrast ≥ WCAG AA 4.5:1.** Button / key text vs background must be dark-on-
+  light or light-on-dark. Never pale-text-on-pale-bg. Verify every text is
+  readable, including at 50% zoom.
+- **440×280 small promo iron rules.** popup mock scale ≤ 0.30; features use
+  plain text + colored dot (no card containers); ≤ 3 feature rows + 1 CTA only.
+- **Mandatory self-preview loop.** After every change, `read_file` **every**
+  generated PNG and verify against the 10-item self-check in the checklist. Never
+  assume "probably fine".
 
 ## Language & Localization Rules (mandatory)
 
@@ -95,13 +136,30 @@ the QA checklist (`references/qa-checklist.md`):
 ## Visual QA Standard
 
 All generated assets MUST satisfy the checklist in
-`references/qa-checklist.md`. The checklist is the source of truth for:
-font scaling, banner title/subtitle gaps, even card grids, bottom-margin safety
-line, inter-section non-overlap, section-title-to-content spacing, button-text
-vertical centering + auto-shrink, long-copy wrapping (no truncation), the
-generate→preview→fix→regenerate delivery loop, and the localization rules
-above (per-language screenshots, bilingual promo, dynamic-copy switching,
-hand-drawn-card coordinate recomputation, middot CTA).
+`references/qa-checklist.md`. It is the source of truth and now covers:
+
+- **Visual style source** (read `css/style.css` `:root` + `popup.html`, match the
+  real UI, stay in the brand palette).
+- **No emoji / non-ASCII glyphs** (replace with geometric shapes; `font_zh` for
+  Chinese — emoji render as □ boxes).
+- **Solid-color backgrounds** (no grid/dot/dense patterns).
+- **No extra gray** (`surface2` banned on light bg; `shadow=False` on outer cards).
+- **Scale-aware fonts**, banner title/subtitle gaps, even 2×N/3×N grids,
+  bottom-margin safety line (< canvas − 12px), inter-section non-overlap,
+  section-title-to-content spacing ≥ 20px.
+- **Button text** vertically centered (`anchor="mm"`) + auto-shrink, with
+  **WCAG AA ≥ 4.5:1 contrast** (dark-on-light / light-on-dark only).
+- **Internal breathing-space minimums** (brand area, kbd badge ≥ 10px, button
+  font ≤ 0.40×height, toggle width, small-canvas strategy).
+- **440×280 small-promo iron rules** (scale ≤ 0.30, no card containers for
+  features, ≤ 3 feature rows + 1 CTA).
+- **Unified alignment baselines** (one `MARGIN`/`RIGHT`, banner == last column
+  right edge, column gap ≥ 20px, `assert` bounds).
+- **Redraw-not-patch** + relative output paths (Windows `OSError 22` guard).
+- The **mandatory generate → self-preview → fix → regenerate** loop, ending in the
+  **10-item self-check** (§21) — all must pass before delivery.
+- The **localization rules** above (per-language screenshots, bilingual promo,
+  dynamic-copy switching, hand-drawn-card coordinate recomputation, middot CTA).
 
 ## Resources
 

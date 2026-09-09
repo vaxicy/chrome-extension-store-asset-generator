@@ -58,16 +58,10 @@ def text(draw, xy, value, fill=COLORS["ink"], f=None, anchor=None):
 
 
 def base_bg(W, H):
+    # Solid-color background per store-asset-bg-no-dense-pattern rule:
+    # no grid lines / dot arrays (triggers "密集恐惧症").
     img = Image.new("RGB", (W, H), COLORS["paper"])
     draw = ImageDraw.Draw(img)
-    step = 16 if W <= 500 else 24
-    for x in range(0, W, step):
-        draw.line([(x, 0), (x, H)], fill="#f1e4ec", width=1)
-    for y in range(0, H, step):
-        draw.line([(0, y), (W, y)], fill="#f1e4ec", width=1)
-    for x in range(step // 2, W, step):
-        for y in range(step // 2, H, step):
-            draw.rectangle((x, y, x + 2, y + 2), fill="#ffd9ea")
     return img, draw
 
 
