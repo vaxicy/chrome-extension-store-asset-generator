@@ -75,6 +75,36 @@ on Windows → they become **□ boxes**.
 
 ---
 
+## 3.1 Background must NOT equal any swatch / theme color
+
+(alwaysApply rule `store-asset-bg-must-differ-from-swatches-RULE`) The canvas
+backdrop must **differ from every color shown as a swatch / color block** in the
+image. If the backdrop equals one of the swatches, that card merges into the
+background and looks like an empty frame (user pushed back on this twice,
+cross-project).
+
+- Before choosing a backdrop, list every color that appears as a swatch/block in
+  that image, then pick a backdrop **not in that list**.
+- Prefer taking the backdrop from the real source (Chrome theme:
+  `manifest.json` `theme.colors`; web/extension: CSS vars) — choose a token that
+  is *not* itself a swatch (e.g. a near-white `tab_text` / `omnibox_background`).
+- When the only usable token *is* a swatch, derive a clearly separated version
+  (deepen or lighten, e.g. `token × 0.35`) — derived still counts as "from the
+  real source" — never reuse the raw swatch value.
+- Keep a thin derived stroke on cards so the boundary stays visible in the worst
+  case.
+- **Add a hard `assert`** so a collision fails at generation, not at review:
+  ```python
+  assert all(tuple(bg) != tuple(c) for c in swatches), \
+      "backdrop must not equal a swatch colour"
+  ```
+- Affects window-preview promos too: if the page backdrop equals the NTP color
+  inside the mocked window, switch the backdrop to a derived color.
+- Self-check: `read_file` every PNG; confirm each card's border is visibly
+  distinct from the backdrop; no card "disappears".
+
+---
+
 ## 4. Gray-background / shadow protection
 
 The user is highly sensitive to "extra gray".

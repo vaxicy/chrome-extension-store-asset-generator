@@ -30,7 +30,11 @@ Trigger this skill when the user:
 
 ## Prerequisites
 
-- Python 3 with `Pillow` installed (`pip install Pillow`).
+- Python 3 with `Pillow` installed. On Windows run scripts with **`py -3`**
+  (e.g. `py -3 scripts/generate-store-screenshots.py`). Note: bare `python` and
+  `python3` are broken on this machine (WindowsApps stub → exit 9009, and a
+  venv-less `python` → "No pyvenv.cfg"), so always use `py -3`. `pip install Pillow`
+  via `py -3 -m pip install Pillow`.
 - The pixel font `assets/PressStart2P-Regular.ttf` is **optional**. If a project
   wants the retro/pixel look, copy it to `<project>/fonts/PressStart2P-Regular.ttf`
   (the scripts look there first). For non-pixel projects, the scripts fall back to
@@ -40,11 +44,11 @@ Trigger this skill when the user:
 
 Follow this exact cycle for every asset change. Do not skip steps.
 
-1. **Generate** — run the relevant script from the project root:
-   - Screenshots: `python scripts/generate-store-screenshots.py`
+1. **Generate** — run the relevant script from the project root with `py -3`:
+   - Screenshots: `py -3 scripts/generate-store-screenshots.py`
      (outputs **per-language** sets — `zh` fully Chinese, `en` fully English —
      to `<project>/store-assets/screenshots/{zh,en}/`, 1280×800 each).
-   - Promo tiles: `python scripts/generate-store-promo.py`
+   - Promo tiles: `py -3 scripts/generate-store-promo.py`
      (outputs **bilingual** `promo-small-440x280.png` and
      `promo-large-1400x560.png` — both Chinese + English in one image — to
      `<project>/store-assets/promo/`).
@@ -84,6 +88,13 @@ generation:
   `font_zh()` (msyh), never `font_en()`.
 - **Background must be solid color.** No grid lines, dot arrays, or tiled
   patterns (triggers "密集恐惧症"). Use a soft solid color or a smooth gradient.
+- **Background must NOT equal any swatch / theme color.** The canvas backdrop
+  must differ from every color shown as a swatch / color block in the image
+  (a card that matches the background merges into an empty frame — user pushed
+  back on this twice). Pick a backdrop color not in the swatch list; when the
+  only usable token *is* a swatch, derive a clearly darker/lighter version
+  (e.g. `token × 0.35`) and add an `assert` so a collision fails at generation:
+  `assert all(tuple(bg) != tuple(c) for c in swatches)`.
 - **No extra gray.** Never use `surface2` (`#f0f2f5`) on a light page background;
   use `surface` (white). Any `card()`-style helper defaults to `shadow=True` —
   pass `shadow=False` on every outer card that is not the popup shell itself, or a

@@ -97,10 +97,10 @@ chrome-extension-store-asset-generator/
 - Pillow：
 
 ```bash
-pip install -r requirements.txt
+py -3 -m pip install -r requirements.txt
 ```
 
-> Windows 用户：脚本会优先使用 `<project>/fonts/PressStart2P-Regular.ttf`，否则回退到项目内 `assets/` 或系统自带的 `msyh.ttc` / `simhei.ttf`。
+> Windows 用户：请用 `py -3` 运行脚本（本机 `python3`/`python` 均无法正常使用）。脚本会优先使用 `<project>/fonts/PressStart2P-Regular.ttf`，否则回退到项目内 `assets/` 或系统自带的 `msyh.ttc` / `simhei.ttf`。
 
 ---
 
@@ -116,10 +116,10 @@ Copy-Item . "$env:USERPROFILE\.codebuddy\skills\chrome-extension-store-asset-gen
 
 ```bash
 # 截图：按语言分两套，输出到 store-assets/screenshots/{zh,en}/
-python scripts/generate-store-screenshots.py
+py -3 scripts/generate-store-screenshots.py
 
 # 宣传图：中英双语同图，输出到 store-assets/promo/{promo-small-440x280,promo-large-1400x560}.png
-python scripts/generate-store-promo.py
+py -3 scripts/generate-store-promo.py
 ```
 
 生成后请对照 `references/qa-checklist.md` 逐项检查，发现问题后修改脚本参数并重新生成，直到全部通过。
@@ -144,6 +144,7 @@ python scripts/generate-store-promo.py
 
 - **禁 emoji / 非标准 Unicode 符号**：PIL 渲染 emoji 与 ✦▽➤◆ 等会成 □ 方框；改用几何图形，中文须用 `font_zh`。
 - **背景纯色**：禁网格线 / 圆点阵列等密集图案（密集恐惧症）。
+- **底色必须异于画面中任何色卡/主题色**：背景不得与画面里出现的色块色值相同，否则卡片会融成空框；必要时用派生色并加 `assert`。
 - **灰底 / 阴影防护**：禁 `surface2`，外层卡片 `shadow=False`，避免灰色光晕。
 - **对比度 ≥ WCAG AA 4.5:1**：按钮 / 关键文字须深底白字或白底深字。
 - **440×280 小型宣传图铁律**：popup scale ≤ 0.30、feature 用圆点 + 文字（禁卡片容器）、≤ 3 行 feature + 1 CTA。
@@ -205,7 +206,9 @@ A reusable CodeBuddy skill for generating Chrome Web Store screenshots and promo
 ### Prerequisites
 
 - Python 3.10+
-- `Pillow` (install via `pip install -r requirements.txt`)
+- `Pillow` (install via `py -3 -m pip install -r requirements.txt`)
+
+> On Windows run scripts with `py -3`; bare `python`/`python3` are unreliable on this machine.
 
 ### Usage
 
@@ -218,8 +221,8 @@ Copy-Item . "$env:USERPROFILE\.codebuddy\skills\chrome-extension-store-asset-gen
 Run the scripts from your project root (assets default to `<project>/store-assets/`):
 
 ```bash
-python scripts/generate-store-screenshots.py  # per-language sets → store-assets/screenshots/{zh,en}/
-python scripts/generate-store-promo.py        # bilingual tiles → store-assets/promo/
+py -3 scripts/generate-store-screenshots.py  # per-language sets → store-assets/screenshots/{zh,en}/
+py -3 scripts/generate-store-promo.py        # bilingual tiles → store-assets/promo/
 ```
 
 After generation, inspect every PNG against `references/qa-checklist.md`, fix the script parameters, and regenerate until all checks pass.

@@ -14,7 +14,13 @@ COLORS = {
     "paper": "#fff9fc",
     "panel": "#fffdf7",
     "white": "#ffffff",
+    "purple": "#8c6cff",
 }
+
+
+def hex_to_rgb(h):
+    h = h.lstrip("#")
+    return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
 
 
 def font(size, bold=False, pixel=False):
@@ -143,63 +149,38 @@ def small_promo():
     W, H = 440, 280
     img, draw = base_bg(W, H)
 
+    # §3.1: backdrop must not equal any swatch color shown in the image.
+    swatches = ["#ff6b9d", "#8c6cff", "#69d9bf", "#fff0a8", "#75bfe8", "#f05f7d"]
+    assert hex_to_rgb(COLORS["paper"]) not in [hex_to_rgb(s) for s in swatches], \
+        "backdrop must not equal a swatch colour"
+
     # pink banner (title brand + bilingual subtitle)
     rect(draw, (16, 14, 424, 58), COLORS["pink"], width=3)
     text(draw, (28, 20), "Pixel Color Picker", fill="white", f=font(19, bold=True))
     text(draw, (28, 44), "网页取色 · Web color picker", fill="white", f=font(11))
 
-    # compact popup mock that fully fits the 440×280 canvas with safe margins
-    px, py, pw, ph = 18, 68, 150, 190
-    rect(draw, (px + 6, py + 6, px + pw + 6, py + ph + 6), "#d8d1d8",
-         outline="#d8d1d8", width=0)
-    rect(draw, (px, py, px + pw, py + ph), COLORS["white"], width=4)
+    # §14 iron rule: popup mock scale ≤ 0.30 (0.30 → 108×156 + shadow).
+    popup_mock(draw, 18, 62, scale=0.30)
 
-    # header
-    rect(draw, (px + 10, py + 10, px + pw - 10, py + 42), COLORS["pink"], width=3)
-    text(draw, (px + 18, py + 17), "PIXEL TOOL", fill="white",
-         f=font(10, pixel=True))
-    text(draw, (px + 18, py + 28), "像素吸色器", fill="white",
-         f=font(12, bold=True))
-
-    # bilingual quick-pick bar (single bar, both languages)
-    rect(draw, (px + 14, py + 50, px + pw - 14, py + 78), COLORS["mint"], width=3)
-    text(draw, (px + pw // 2, py + 58), "快速取色 · Pick", f=font(12, bold=True),
-         anchor="ma")
-
-    # two palette cards
-    swatches = ["#ff6b9d", "#8c6cff", "#69d9bf", "#fff0a8"]
-    pal_names = [("默认色卡", "4/20 色"), ("品牌灵感", "5/20 色")]
-    for i, ((name, count), color) in enumerate(zip(pal_names, swatches)):
-        cy = py + 88 + i * 50
-        rect(draw, (px + 14, cy, px + pw - 14, cy + 40), COLORS["panel"], width=3)
-        for j, c in enumerate(swatches):
-            sx = px + 22 + j * 20
-            draw.rectangle((sx, cy + 9, sx + 16, cy + 25), fill=c,
-                           outline=COLORS["ink"], width=2)
-        text(draw, (px + 102, cy + 8), name, f=font(11, bold=True))
-        text(draw, (px + 102, cy + 24), count, fill=COLORS["soft"], f=font(9))
-
-    # bottom bar
-    rect(draw, (px + 14, py + ph - 32, px + pw - 14, py + ph - 10),
-         COLORS["cream"], width=3)
-    text(draw, (px + pw // 2, py + ph - 21), "历史 · History", f=font(10),
-         anchor="ma")
-
-    # right-side features — compact bilingual
-    rx = 182
+    # right-side features — ≤3 rows, plain text + colored dot (NO card containers)
+    rx = 150
     features = [
-        ("网页吸色", "取色 · Pick"),
-        ("色卡管理", "色卡 · Palettes"),
-        ("格式导出", "导出 · Export"),
-        ("中英双语", "双语 · Bilingual"),
+        ("网页吸色", "取色 · Pick", COLORS["pink"]),
+        ("色卡管理", "色卡 · Palettes", COLORS["mint"]),
+        ("格式导出", "导出 · Export", COLORS["purple"]),
     ]
-    for i, (title, desc) in enumerate(features):
-        fy = 74 + i * 45
-        rect(draw, (rx, fy, 420, fy + 38), COLORS["panel"], width=3)
-        draw.ellipse((rx + 9, fy + 9, rx + 25, fy + 25), fill=COLORS["pink"],
+    for i, (title, desc, dot) in enumerate(features):
+        fy = 70 + i * 44
+        draw.ellipse((rx + 6, fy + 8, rx + 22, fy + 24), fill=dot,
                      outline=COLORS["ink"], width=2)
-        text(draw, (rx + 34, fy + 5), title, f=font(13, bold=True))
-        text(draw, (rx + 34, fy + 21), desc, fill=COLORS["soft"], f=font(10))
+        text(draw, (rx + 32, fy + 3), title, f=font(13, bold=True))
+        text(draw, (rx + 32, fy + 20), desc, fill=COLORS["soft"], f=font(10))
+
+    # bottom CTA — bottom (234+30=264) ≤ canvas−12 (268)
+    cta_y = 234
+    rect(draw, (rx, cta_y, 420, cta_y + 30), COLORS["mint"], width=3)
+    text(draw, (rx + 135, cta_y + 15), "免费使用 · Free",
+         f=font(13, bold=True), anchor="mm")
 
     img.save(OUT / "promo-small-440x280.png")
 
@@ -209,6 +190,11 @@ def small_promo():
 def large_promo():
     W, H = 1400, 560
     img, draw = base_bg(W, H)
+
+    # §3.1: backdrop must not equal any swatch color in the image.
+    swatches = ["#ff6b9d", "#8c6cff", "#69d9bf", "#fff0a8", "#75bfe8", "#f05f7d"]
+    assert hex_to_rgb(COLORS["paper"]) not in [hex_to_rgb(s) for s in swatches], \
+        "backdrop must not equal a swatch colour"
 
     # ── Top: full-width pink hero banner ─────────────────────
     rect(draw, (36, 24, 1364, 116), COLORS["pink"], width=5)
