@@ -97,10 +97,10 @@ chrome-extension-store-asset-generator/
 - Pillow：
 
 ```bash
-py -3 -m pip install -r requirements.txt
+python3 -m pip install -r requirements.txt   # Windows 用户改用 py -3
 ```
 
-> Windows 用户：请用 `py -3` 运行脚本（本机 `python3`/`python` 均无法正常使用）。脚本会优先使用 `<project>/fonts/PressStart2P-Regular.ttf`，否则回退到项目内 `assets/` 或系统自带的 `msyh.ttc` / `simhei.ttf`。
+> 运行脚本：macOS/Linux 用 `python3`，Windows 用 `py -3`（本机 `python3`/`python` 均无法正常使用）。脚本会优先使用 `<project>/fonts/PressStart2P-Regular.ttf`，否则回退到项目内 `assets/` 或系统自带的 `msyh.ttc` / `simhei.ttf`。
 
 ---
 
@@ -116,10 +116,10 @@ Copy-Item . "$env:USERPROFILE\.codebuddy\skills\chrome-extension-store-asset-gen
 
 ```bash
 # 截图：按语言分两套，输出到 store-assets/screenshots/{zh,en}/
-py -3 scripts/generate-store-screenshots.py
+python3 scripts/generate-store-screenshots.py   # Windows 用 py -3
 
 # 宣传图：中英双语同图，输出到 store-assets/promo/{promo-small-440x280,promo-large-1400x560}.png
-py -3 scripts/generate-store-promo.py
+python3 scripts/generate-store-promo.py          # Windows 用 py -3
 ```
 
 生成后请对照 `references/qa-checklist.md` 逐项检查，发现问题后修改脚本参数并重新生成，直到全部通过。
@@ -150,7 +150,7 @@ py -3 scripts/generate-store-promo.py
 - **440×280 小型宣传图铁律**：popup scale ≤ 0.30、feature 用圆点 + 文字（禁卡片容器）、≤ 3 行 feature + 1 CTA。
 - **对齐基准线统一**：所有区块共用同一条左右边距，banner 右缘 = 末列右缘，列间距 ≥ 20px。
 - **重绘不 patch**：改脚本全量重生成；相对路径输出防 Windows 中文路径 `OSError 22`。
-- **强制逐张自检闭环**：`read_file` 打开每张 PNG，10 项自检全过才交付。
+- **强制逐张自检闭环**：用 `read_file` (CodeBuddy) / `Read` (Claude Code) / `read` (Codex) 打开每张 PNG，10 项自检全过才交付。
 
 **本地化规则（硬性）：**
 
@@ -175,10 +175,27 @@ py -3 scripts/generate-store-promo.py
 
 ```powershell
 # 复制到用户级 skill 目录
-Copy-Item . "$env:USERPROFILE\.codebuddy\skills\chrome-extension-store-asset-generator" -Recurse -Force
+Copy-Item . "$env:USERPROFILE\.codebuddy\skills\store-asset-generator" -Recurse -Force
 ```
 
 之后，只要你说「生成商店截图 / 宣传图」或提到 `generate-store-screenshots.py`，该 Skill 就会自动触发。
+
+---
+
+## 在其他 Agent（Claude Code / Codex）中使用 | Use with Claude Code / Codex
+
+本 Skill 遵循开放的 **Agent Skills** 规范（`SKILL.md` 含 `name` / `description` frontmatter，
+且已是标准目录结构），可直接用于 Claude Code 与 OpenAI Codex，脚本与 QA 清单三端共用，
+无需任何改动。
+
+- **Claude Code**（个人级）：把整个 `store-asset-generator/` 文件夹复制到
+  `~/.claude/skills/store-asset-generator/`（项目级放 `<repo>/.claude/skills/store-asset-generator/`）。
+  之后用 `/store-asset-generator` 触发，或自然语言描述「生成商店截图 / 宣传图」自动匹配。
+- **Codex（OpenAI）**：复制到 `~/.codex/skills/store-asset-generator/`
+  （项目级 `<repo>/.codex/skills/store-asset-generator/`）。Codex 按 `description` 自动匹配。
+
+> 跨 Agent 差异只在两处：① 预览 PNG 的工具名不同（CodeBuddy `read_file` / Claude Code `Read` / Codex `read`）；
+> ② 运行脚本的 Python 启动器（macOS/Linux `python3` / Windows `py -3`）。其余 `scripts/`、`references/` 完全一致。
 
 ---
 
@@ -206,9 +223,9 @@ A reusable CodeBuddy skill for generating Chrome Web Store screenshots and promo
 ### Prerequisites
 
 - Python 3.10+
-- `Pillow` (install via `py -3 -m pip install -r requirements.txt`)
+- `Pillow` (install via `python3 -m pip install -r requirements.txt`; Windows: `py -3 -m pip install -r requirements.txt`)
 
-> On Windows run scripts with `py -3`; bare `python`/`python3` are unreliable on this machine.
+> Run scripts with `python3` on macOS/Linux, or `py -3` on Windows.
 
 ### Usage
 

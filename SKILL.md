@@ -1,6 +1,8 @@
 ---
-name: chrome-extension-store-asset-generator
-description: "Generate Chrome Web Store screenshots and promotional images (PNG/JPG) for browser-extension or web-app projects using a PIL-based Python pipeline, then enforce a strict visual QA checklist before delivery. Use this skill whenever the user asks to create, update, or fix store listing art, promo tiles, screenshots, or any marketing image produced by a generate-store-*.py script. 中文：Chrome 扩展商店素材生成器，一键生成商店截图与宣传图并做视觉 QA。"
+name: store-asset-generator
+description: "Generate Chrome Web Store screenshots (1280x800, per-language zh/en) and bilingual promo tiles (440x280 / 1400x560) for browser-extension or web-app projects using a PIL-based Python pipeline, then enforce a strict visual QA + localization checklist before delivery. Use when the user asks to create, update, or fix store listing art, promo tiles, screenshots, or any marketing image produced by a generate-store-*.py script. 中文：Chrome 扩展商店素材生成器，一键生成商店截图与宣传图并做视觉 QA。"
+allowed-tools: Bash, Read, Write, Edit
+compatibility: Requires Python 3.10+ with Pillow. Cross-agent: works in CodeBuddy, Claude Code, and Codex (Agent Skills spec).
 ---
 
 # Store Asset Generator
@@ -30,11 +32,10 @@ Trigger this skill when the user:
 
 ## Prerequisites
 
-- Python 3 with `Pillow` installed. On Windows run scripts with **`py -3`**
-  (e.g. `py -3 scripts/generate-store-screenshots.py`). Note: bare `python` and
-  `python3` are broken on this machine (WindowsApps stub → exit 9009, and a
-  venv-less `python` → "No pyvenv.cfg"), so always use `py -3`. `pip install Pillow`
-  via `py -3 -m pip install Pillow`.
+- Python 3 with `Pillow` installed. **Run scripts with `python3` on macOS/Linux,
+  or `py -3` on Windows** (this author's Windows has broken `python`/`python3`
+  launchers → use `py -3` there). Install: `python3 -m pip install -r requirements.txt`
+  (Windows: `py -3 -m pip install -r requirements.txt`).
 - The pixel font `assets/PressStart2P-Regular.ttf` is **optional**. If a project
   wants the retro/pixel look, copy it to `<project>/fonts/PressStart2P-Regular.ttf`
   (the scripts look there first). For non-pixel projects, the scripts fall back to
@@ -44,11 +45,12 @@ Trigger this skill when the user:
 
 Follow this exact cycle for every asset change. Do not skip steps.
 
-1. **Generate** — run the relevant script from the project root with `py -3`:
-   - Screenshots: `py -3 scripts/generate-store-screenshots.py`
+1. **Generate** — run the relevant script from the project root. On Windows use
+   `py -3`, on macOS/Linux use `python3`:
+   - Screenshots: `python3 scripts/generate-store-screenshots.py`
      (outputs **per-language** sets — `zh` fully Chinese, `en` fully English —
      to `<project>/store-assets/screenshots/{zh,en}/`, 1280×800 each).
-   - Promo tiles: `py -3 scripts/generate-store-promo.py`
+   - Promo tiles: `python3 scripts/generate-store-promo.py`
      (outputs **bilingual** `promo-small-440x280.png` and
      `promo-large-1400x560.png` — both Chinese + English in one image — to
      `<project>/store-assets/promo/`).
@@ -115,8 +117,10 @@ generation:
   readable, including at 50% zoom.
 - **440×280 small promo iron rules.** popup mock scale ≤ 0.30; features use
   plain text + colored dot (no card containers); ≤ 3 feature rows + 1 CTA only.
-- **Mandatory self-preview loop.** After every change, `read_file` **every**
-  generated PNG and verify against the 10-item self-check in the checklist. Never
+- **Mandatory self-preview loop.** After every change, open **every** generated
+  PNG with your agent's image viewer (`read_file` in CodeBuddy, `Read` in
+  Claude Code, `read` in Codex) and verify against the 10-item self-check in the
+  checklist. Never
   assume "probably fine".
 
 ## Language & Localization Rules (mandatory)

@@ -3,7 +3,7 @@
 Apply this checklist to **every** PNG/JPG produced by the `generate-store-*.py`
 scripts, after generation and before delivery. The
 **generate → self-preview → fix → regenerate** loop is mandatory; never assume
-an asset "is probably fine" without visually verifying each item via `read_file`
+an asset "is probably fine" without visually verifying each item via `read_file` (CodeBuddy) / `Read` (Claude Code) / `read` (Codex)
 on **every** PNG (not just a sample).
 
 All assets must also satisfy the **Localization Rules** (§20) and the **10-item
@@ -58,7 +58,7 @@ on Windows → they become **□ boxes**.
   fonts render Chinese as □.
 - `font_zh(10)` is too small and fails to render; minimum ~11 for feature
   descriptions.
-- Self-check: `grep` the script for any emoji/non-ASCII symbol; `read_file`
+- Self-check: `grep` the script for any emoji/non-ASCII symbol; `read_file` (CodeBuddy) / `Read` (Claude Code) / `read` (Codex)
   every PNG to confirm no □ boxes (including ✦/▽/➤).
 
 ---
@@ -70,7 +70,7 @@ on Windows → they become **□ boxes**.
   trigger "密集恐惧症" and look unprofessional.
 - Gradients OK only if smooth (no hard repeating edges).
 - Texture noise permitted only at opacity ≤ 0.03 (barely visible).
-- Self-check: `read_file` confirm solid background; no stray grid/dots;
+- Self-check: `read_file` (CodeBuddy) / `Read` (Claude Code) / `read` (Codex) confirm solid background; no stray grid/dots;
   foreground UI has enough contrast on it.
 
 ---
@@ -100,7 +100,7 @@ cross-project).
   ```
 - Affects window-preview promos too: if the page backdrop equals the NTP color
   inside the mocked window, switch the backdrop to a derived color.
-- Self-check: `read_file` every PNG; confirm each card's border is visibly
+- Self-check: `read_file` (CodeBuddy) / `Read` (Claude Code) / `read` (Codex) every PNG; confirm each card's border is visibly
   distinct from the backdrop; no card "disappears".
 
 ---
@@ -259,7 +259,7 @@ Below these values → crowding / overlap / overflow.
 - Pasted mockup left x == `MARGIN` (same line as banner left). ≥ 40px breathing
   space to right content column.
 - Self-check: `assert` right edge ≤ RIGHT, bottom ≤ H−12, adjacent y-ranges
-  non-intersecting; `read_file` every PNG to confirm edges align to one line.
+  non-intersecting; `read_file` (CodeBuddy) / `Read` (Claude Code) / `read` (Codex) every PNG to confirm edges align to one line.
 
 ---
 
